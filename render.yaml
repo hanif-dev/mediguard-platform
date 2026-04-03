@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: mediguard-api
+    runtime: java
+    region: frankfurt
+    plan: free
+    rootDir: backend
+    buildCommand: mvn clean package -DskipTests
+    startCommand: java -jar target/mediguard-backend-1.0.0.jar
+    envVars:
+      - key: JAVA_VERSION
+        value: 21
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: mediguard-db
+          property: connectionString
+
+databases:
+  - name: mediguard-db
+    plan: free
+    region: frankfurt
