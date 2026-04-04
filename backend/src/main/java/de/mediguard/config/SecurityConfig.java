@@ -2,8 +2,8 @@ package de.mediguard.config;
 
 import de.mediguard.auth.JwtAuthFilter;
 import de.mediguard.user.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy; 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,11 +31,16 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final UserRepository userRepository;
+
+    public SecurityConfig(@Lazy JwtAuthFilter jwtAuthFilter,
+                          UserRepository userRepository) {
+        this.jwtAuthFilter = jwtAuthFilter;
+        this.userRepository = userRepository;
+    }
 
     @Value("${mediguard.cors.allowed-origins}")
     private String allowedOrigins;
