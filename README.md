@@ -149,5 +149,5 @@ VITE_API_URL=https://mediguard-api.onrender.com npm run build
 
 ## Erstellt von
 
-**Hanif K** | Data Scientist & CTI Analyst  
-YSEALI CyberSafe ASEAN Alumni | IBM Cybersecurity Certified
+**Hanif K** | Full Stack Developer & CTI Analyst  
+YSEALI Alumni | IBM Cybersecurity Certified
