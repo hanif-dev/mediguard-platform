@@ -17,12 +17,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-/**
- * FIXED:
- * - Tidak ada @Lazy → CGLIB warning hilang
- * - UserDetailsService inject ke UserDetailsServiceImpl (bukan SecurityConfig)
- * - Try-catch di token validation: exception tidak crash filter chain
- */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -37,20 +31,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     FilterChain chain) throws ServletException, IOException {
         String token = extractToken(request);
 
-        if (token != null) {
-            try {
-                if (jwtUtil.validateToken(token)) {
-                    String username = jwtUtil.extractUsername(token);
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                    var auth = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities());
-                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(auth);
-                }
-            } catch (Exception e) {
-                log.debug("JWT validation failed [{}]: {}",
-                        request.getRequestURI(), e.getMessage());
-            }
+        if (token != null && jwtUtil.validateToken(token)) {
+            String username = jwtUtil.extractUsername(token);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            var auth = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities());
+            auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(auth);
         }
 
         chain.doFilter(request, response);
